@@ -17,6 +17,7 @@ export class ChatGateway {
     @MessageBody() roomName: string,
     @ConnectedSocket() socket: Socket,
   ) {
+    // console.log('join_room', roomName);
     const room = this.server.in(roomName);
 
     const roomSockets = await room.fetchSockets();
@@ -24,12 +25,14 @@ export class ChatGateway {
 
     // a maximum of 2 people in a room
     if (numberOfPeopleInRoom > 1) {
+      // console.log('too_many_people', roomSockets.length);
       room.emit('too_many_people');
       return;
     }
 
     if (numberOfPeopleInRoom === 1) {
       room.emit('another_person_ready');
+      // console.log('another_person_ready');
     }
 
     socket.join(roomName);
@@ -38,15 +41,16 @@ export class ChatGateway {
   @SubscribeMessage('send_connection_offer')
   async sendConnectionOffer(
     @MessageBody()
-      {
-        offer,
-        roomName,
-      }: {
+    {
+      offer,
+      roomName,
+    }: {
       offer: RTCSessionDescriptionInit;
       roomName: string;
     },
     @ConnectedSocket() socket: Socket,
   ) {
+    // console.log('send_connection_offer', roomName);
     this.server.in(roomName).except(socket.id).emit('send_connection_offer', {
       offer,
       roomName,
@@ -56,10 +60,10 @@ export class ChatGateway {
   @SubscribeMessage('answer')
   async answer(
     @MessageBody()
-      {
-        answer,
-        roomName,
-      }: {
+    {
+      answer,
+      roomName,
+    }: {
       answer: RTCSessionDescriptionInit;
       roomName: string;
     },
@@ -74,10 +78,10 @@ export class ChatGateway {
   @SubscribeMessage('send_candidate')
   async sendCandidate(
     @MessageBody()
-      {
-        candidate,
-        roomName,
-      }: {
+    {
+      candidate,
+      roomName,
+    }: {
       candidate: unknown;
       roomName: string;
     },

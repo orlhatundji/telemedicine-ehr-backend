@@ -9,15 +9,25 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: configService.get('FRONTEND_URL'),
+    origin: [
+      configService.get('FRONTEND_URL1'),
+      configService.get('FRONTEND_URL2'),
+      configService.get('FRONTEND_URL3'),
+      configService.get('FRONTEND_URL4'),
+    ],
   });
 
   app.useWebSocketAdapter(
     new WebsocketAdapter(app, {
-      origin: configService.get('FRONTEND_URL'),
+      origin: [
+        configService.get('FRONTEND_URL1'),
+        configService.get('FRONTEND_URL2'),
+        configService.get('FRONTEND_URL3'),
+        configService.get('FRONTEND_URL4'),
+      ],
     }),
   );
 
-  await app.listen(3000);
+  await app.listen(3003);
 }
 bootstrap();
