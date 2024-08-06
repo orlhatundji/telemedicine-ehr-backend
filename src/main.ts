@@ -13,7 +13,6 @@ async function bootstrap() {
       configService.get('FRONTEND_URL1'),
       configService.get('FRONTEND_URL2'),
       configService.get('FRONTEND_URL3'),
-      configService.get('FRONTEND_URL4'),
     ],
   });
 
@@ -23,7 +22,6 @@ async function bootstrap() {
         configService.get('FRONTEND_URL1'),
         configService.get('FRONTEND_URL2'),
         configService.get('FRONTEND_URL3'),
-        configService.get('FRONTEND_URL4'),
       ],
     }),
   );

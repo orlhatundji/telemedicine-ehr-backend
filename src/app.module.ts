@@ -13,7 +13,6 @@ import { ConfigModule } from '@nestjs/config';
         FRONTEND_URL1: Joi.string().required(),
         FRONTEND_URL2: Joi.string().required(),
         FRONTEND_URL3: Joi.string().required(),
-        FRONTEND_URL4: Joi.string().required(),
       }),
     }),
   ],
