@@ -31,7 +31,7 @@ export class DoctorService {
     });
   }
 
-  async create(data: Prisma.DoctorUncheckedCreateInput): Promise<Doctor> {
+  async create(data: Prisma.DoctorUncheckedCreateInput) {
     return this.prisma.doctor.create({
       data,
     });

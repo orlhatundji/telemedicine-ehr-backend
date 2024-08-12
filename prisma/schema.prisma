@@ -27,7 +27,7 @@ model Doctor {
   name       String
   specialty  String
   userId     Int?          @unique
-  user       User?         @relation(fields: [userId], references: [id])
+  user       User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
 }
 
@@ -35,7 +35,7 @@ model Patient {
   id          Int          @id @default(autoincrement())
   name        String
   userId     Int          @unique
-  user       User         @relation(fields: [userId], references: [id])
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
 }
 
@@ -43,7 +43,7 @@ model Appointment {
   id        Int      @id @default(autoincrement())
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
   doctorId  Int
-  patient   Patient  @relation(fields: [patientId], references: [id])
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId Int
   date      DateTime
   startTime DateTime

@@ -19,7 +19,7 @@ export class DoctorController {
   @UseGuards(AuthGuard)
   @Get(':email')
   async findDoctor(@Param('email') email: string) {
-    const user = await this.userService.findOne({ email: email });
+    const user = await this.userService.findOne({ email });
     if (!user) {
       return 'Doctor not found with this email';
     }
@@ -45,19 +45,14 @@ export class DoctorController {
         email,
         password,
         role: 'DOCTOR',
+        doctor: {
+          create: rest,
+        },
       });
     } catch (error) {
       return 'Doctor not created';
     }
 
-    try {
-      return await this.doctorService.create({
-        ...rest,
-        userId: createdUser.id,
-      });
-    } catch (error) {
-      await this.userService.deleteUser({ id: createdUser.id });
-      return 'An error occurred during doctor creation';
-    }
+    return createdUser;
   }
 }
