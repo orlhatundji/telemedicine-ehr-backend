@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Patient, Prisma, User } from '@prisma/client';
+import { Patient, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -29,20 +29,37 @@ export class PatientService {
     });
   }
 
-  async findOne(params: {
-    where: Prisma.UserWhereUniqueInput;
-  }): Promise<
-    (User & { patient: { id: number; name: string; userId: number } }) | null
+  async findOne(params: { where: Prisma.UserWhereUniqueInput }): Promise<
+    | ({
+        id: number;
+        email: string;
+        role: string;
+      } & {
+        patient: {
+          id: number;
+          name: string;
+          userId: number;
+          assignedDoctors?: { id: number; name: string }[];
+        };
+      })
+    | null
   > {
     const { where } = params;
     return this.prismaService.user.findUnique({
       where,
-      include: {
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        password: false,
         patient: {
           select: {
             id: true,
             name: true,
             userId: true,
+            assignedDoctors: {
+              select: { id: true, name: true },
+            },
           },
         },
       },

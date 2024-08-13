@@ -29,6 +29,7 @@ model Doctor {
   userId     Int?          @unique
   user       User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
+  assignedPatients  Patient[]
 }
 
 model Patient {
@@ -37,6 +38,7 @@ model Patient {
   userId     Int          @unique
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
+  assignedDoctors Doctor[]
 }
 
 model Appointment {
@@ -45,7 +47,7 @@ model Appointment {
   doctorId  Int
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId Int
-  date      DateTime
+  date      DateTime 
 }
 
 enum Role {

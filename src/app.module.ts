@@ -9,6 +9,9 @@ import { UserModule } from './users/user.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PatientModule } from './patient/patient.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { AdminController } from './admin/admin.controller';
+import { AdminModule } from './admin/admin.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -28,8 +31,9 @@ import { AppointmentModule } from './appointment/appointment.module';
     DoctorModule,
     PatientModule,
     AppointmentModule,
+    AdminModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AdminController],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}
