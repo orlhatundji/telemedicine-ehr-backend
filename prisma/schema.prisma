@@ -46,7 +46,6 @@ model Appointment {
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId Int
   date      DateTime
-  startTime DateTime
 }
 
 enum Role {

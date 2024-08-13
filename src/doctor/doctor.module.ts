@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
     PrismaService,
     JwtService,
     ConfigService,
+    PrismaService,
   ],
 })
 export class DoctorModule {}

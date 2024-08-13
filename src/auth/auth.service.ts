@@ -35,7 +35,7 @@ export class AuthService {
 
     return {
       access_token: await this.jwtService.signAsync(
-        { email },
+        { email, role: user.role },
         { expiresIn: '1d', secret: this.configService.get('JWT_SECRET') },
       ),
     };

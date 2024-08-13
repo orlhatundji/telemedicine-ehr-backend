@@ -16,7 +16,7 @@ CREATE TABLE "Doctor" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "specialty" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" INTEGER,
 
     CONSTRAINT "Doctor_pkey" PRIMARY KEY ("id")
 );
@@ -36,7 +36,6 @@ CREATE TABLE "Appointment" (
     "doctorId" INTEGER NOT NULL,
     "patientId" INTEGER NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Appointment_pkey" PRIMARY KEY ("id")
 );
@@ -51,13 +50,13 @@ CREATE UNIQUE INDEX "Doctor_userId_key" ON "Doctor"("userId");
 CREATE UNIQUE INDEX "Patient_userId_key" ON "Patient"("userId");
 
 -- AddForeignKey
-ALTER TABLE "Doctor" ADD CONSTRAINT "Doctor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Doctor" ADD CONSTRAINT "Doctor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Patient" ADD CONSTRAINT "Patient_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Patient" ADD CONSTRAINT "Patient_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "Doctor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("id") ON DELETE CASCADE ON UPDATE CASCADE;

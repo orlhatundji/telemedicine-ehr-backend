@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './users/user.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PatientModule } from './patient/patient.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [
@@ -18,12 +19,15 @@ import { PatientModule } from './patient/patient.module';
         FRONTEND_URL2: Joi.string().required(),
         FRONTEND_URL3: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        saltOrRounds: Joi.number().required(),
+        PORT: Joi.number(),
       }),
     }),
     AuthModule,
     UserModule,
     DoctorModule,
     PatientModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

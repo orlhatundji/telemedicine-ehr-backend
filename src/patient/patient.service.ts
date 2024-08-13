@@ -1,17 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Patient, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PatientService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private configService: ConfigService,
+  ) {}
   async create(data: Prisma.PatientCreateInput): Promise<Patient> {
-    data.user.create.role = 'PATIENT';
-    const saltOrRounds = 10;
-    const hash = await bcrypt.hash(data.user.create.password, saltOrRounds);
-    data.user.create.password = hash;
-    return this.prismaService.patient.create({ data });
+    return this.prismaService.patient.create({
+      data,
+      include: { user: { select: { email: true } } },
+    });
   }
 
   findAll() {
@@ -29,7 +31,9 @@ export class PatientService {
 
   async findOne(params: {
     where: Prisma.UserWhereUniqueInput;
-  }): Promise<User | null> {
+  }): Promise<
+    (User & { patient: { id: number; name: string; userId: number } }) | null
+  > {
     const { where } = params;
     return this.prismaService.user.findUnique({
       where,
