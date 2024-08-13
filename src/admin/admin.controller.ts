@@ -7,8 +7,6 @@ export class AdminController {
 
   @Post('assign-doctor')
   async assignDoctor(@Body() data: { doctorId: number; patientId: number }) {
-    console.log(data);
-
     const patient = await this.prismaService.patient.findUnique({
       where: { id: data.patientId },
     });
