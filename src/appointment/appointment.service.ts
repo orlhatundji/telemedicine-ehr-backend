@@ -42,4 +42,13 @@ export class AppointmentService {
       include: data.include,
     });
   }
+
+  findByDoctorByDate(data: { date: Date; doctorId: number }) {
+    return this.prismaService.appointment.findMany({
+      where: {
+        date: data.date,
+        doctorId: data.doctorId,
+      },
+    });
+  }
 }

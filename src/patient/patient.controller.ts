@@ -7,6 +7,7 @@ import {
   Delete,
   UseGuards,
   HttpException,
+  Req,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PatientService } from './patient.service';
@@ -60,9 +61,23 @@ export class PatientController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('assigned-doctors')
+  async findAssignedDoctors(@Req() req) {
+    const patient = await this.patientService.findOne({
+      where: { email: req.user.email },
+    });
+    if (!patient) {
+      return new HttpException('Patient not found', 404);
+    }
+    return this.patientService.getAssignedDoctors({ id: +patient.patient.id });
+  }
+
+  @UseGuards(AuthGuard)
   @Get(':email')
   findOne(@Param('email') email: string) {
-    return this.patientService.findOne({ where: { email } });
+    return this.patientService.findOne({
+      where: { email },
+    });
   }
 
   @UseGuards(AuthGuard)

@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Req } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 
 @Controller('admin')
@@ -6,12 +6,12 @@ export class AdminController {
   constructor(private readonly prismaService: PrismaService) {}
 
   @Post('assign-doctor')
-  async assignDoctor() {
+  async assignDoctor(@Req() data: { doctorId: number; patientId: number }) {
     return await this.prismaService.patient.update({
-      where: { id: 3 },
+      where: { id: data.patientId },
       data: {
         assignedDoctors: {
-          connect: { id: 1 },
+          connect: { id: data.doctorId },
         },
       },
     });
