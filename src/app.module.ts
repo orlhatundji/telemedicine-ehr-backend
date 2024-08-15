@@ -12,6 +12,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { AdminController } from './admin/admin.controller';
 import { AdminModule } from './admin/admin.module';
 import { PrismaService } from './prisma.service';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PrismaService } from './prisma.service';
     PatientModule,
     AppointmentModule,
     AdminModule,
+    ReviewModule,
   ],
   controllers: [AppController, AdminController],
   providers: [AppService, PrismaService],

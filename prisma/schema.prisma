@@ -30,6 +30,7 @@ model Doctor {
   user       User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
   assignedPatients  Patient[]
+  reviews Review[]
 }
 
 model Patient {
@@ -39,6 +40,7 @@ model Patient {
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
   assignedDoctors Doctor[]
+  reviews Review[]
 }
 
 model Appointment {
@@ -48,6 +50,17 @@ model Appointment {
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId Int
   date      DateTime 
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  content   String
+  createdAt DateTime @default(now())
+  patientId Int
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  doctorId  Int
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }
 
 enum Role {
