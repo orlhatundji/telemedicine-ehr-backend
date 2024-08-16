@@ -13,6 +13,9 @@ import { AdminController } from './admin/admin.controller';
 import { AdminModule } from './admin/admin.module';
 import { PrismaService } from './prisma.service';
 import { ReviewModule } from './review/review.module';
+import { ZoomModule } from './zoom/zoom.module';
+import { ZoomController } from './zoom/zoom.controller';
+import { ZoomService } from './zoom/zoom.service';
 
 @Module({
   imports: [
@@ -34,8 +37,9 @@ import { ReviewModule } from './review/review.module';
     AppointmentModule,
     AdminModule,
     ReviewModule,
+    ZoomModule,
   ],
-  controllers: [AppController, AdminController],
-  providers: [AppService, PrismaService],
+  controllers: [AppController, AdminController, ZoomController],
+  providers: [AppService, PrismaService, ZoomService],
 })
 export class AppModule {}
