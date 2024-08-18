@@ -11,6 +11,8 @@ import { Server, Socket } from 'socket.io';
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
+  constructor() {}
+  private users = [];
 
   @SubscribeMessage('join_room')
   async joinRoom(
@@ -91,5 +93,58 @@ export class ChatGateway {
       candidate,
       roomName,
     });
+  }
+
+  // @SubscribeMessage('connection')
+  // async connection(
+  //   @MessageBody()
+  //   {
+  //     roomName,
+  //   }: {
+  //     roomName: string;
+  //   },
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   console.log('connect ion', roomName, socket.id);
+  // }
+
+  @SubscribeMessage('newUser')
+  async newUser(
+    @MessageBody()
+    {
+      userName,
+      roomName,
+    }: {
+      userName: string;
+      roomName: string;
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.users.push({ userName, roomName, socketID: socket.id });
+    //Sends the list of users to the client
+    socket.emit('newUserResponse', this.users);
+  }
+
+  @SubscribeMessage('message')
+  handleMessage(
+    @MessageBody()
+    message: {
+      senderId: string;
+      receiverId: string;
+      message: string;
+      roomName: string;
+      userName: string;
+    },
+    @ConnectedSocket() client: Socket,
+  ): void {
+    client.emit('message', message);
+  }
+
+  @SubscribeMessage('typing')
+  handleTyping(
+    @MessageBody() message: string,
+    @ConnectedSocket() client: Socket,
+  ): void {
+    client.broadcast.emit('typingResponse', message);
   }
 }

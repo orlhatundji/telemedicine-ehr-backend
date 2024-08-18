@@ -16,6 +16,7 @@ import { ReviewModule } from './review/review.module';
 import { ZoomModule } from './zoom/zoom.module';
 import { ZoomController } from './zoom/zoom.controller';
 import { ZoomService } from './zoom/zoom.service';
+import { MessagingModule } from './messaging/messaging.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ZoomService } from './zoom/zoom.service';
     AdminModule,
     ReviewModule,
     ZoomModule,
+    MessagingModule,
   ],
   controllers: [AppController, AdminController, ZoomController],
   providers: [AppService, PrismaService, ZoomService],

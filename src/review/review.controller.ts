@@ -11,6 +11,7 @@ export class ReviewController {
     private readonly prismaService: PrismaService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() data: Prisma.ReviewCreateInput) {
     return this.reviewService.create(data);
