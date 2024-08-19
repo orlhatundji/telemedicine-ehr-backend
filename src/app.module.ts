@@ -26,6 +26,8 @@ import { MessagingModule } from './messaging/messaging.module';
         FRONTEND_URL1: Joi.string().required(),
         FRONTEND_URL2: Joi.string().required(),
         FRONTEND_URL3: Joi.string().required(),
+        FRONTEND_URL4: Joi.string().required(),
+        FRONTEND_URL5: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         saltOrRounds: Joi.number().required(),
         PORT: Joi.number(),
