@@ -21,6 +21,12 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('hospital/login')
+  hospitalLogin(@Body() signInDto: { email: string; password: string }) {
+    return this.authService.hospitalSignIn(signInDto.email, signInDto.password);
+  }
+
   @HttpCode(HttpStatus.FOUND)
   @UseGuards(AuthGuard)
   @Get('user')

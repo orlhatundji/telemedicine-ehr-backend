@@ -8,6 +8,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HospitalService } from 'src/hospital/hospital.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     PrismaService,
     JwtService,
     ConfigService,
+    HospitalService,
   ],
   controllers: [AuthController],
 })

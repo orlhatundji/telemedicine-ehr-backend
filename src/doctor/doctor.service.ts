@@ -42,6 +42,10 @@ export class DoctorService {
   async create(data: Prisma.DoctorCreateInput) {
     return this.prismaService.doctor.create({
       data,
+      select: {
+        id: true,
+        userId: true,
+      },
     });
   }
 

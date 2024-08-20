@@ -54,7 +54,7 @@ export class DoctorController {
     } catch (error) {
       return 'Doctor not created';
     }
-
+    delete createdUser.password;
     return createdUser;
   }
 }

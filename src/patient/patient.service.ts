@@ -10,10 +10,14 @@ export class PatientService {
     private configService: ConfigService,
   ) {}
   async create(data: Prisma.PatientCreateInput): Promise<Patient> {
-    return this.prismaService.patient.create({
-      data,
-      include: { user: { select: { email: true } } },
-    });
+    try {
+      return this.prismaService.patient.create({
+        data,
+        include: { user: { select: { email: true } } },
+      });
+    } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
   }
 
   findAll() {

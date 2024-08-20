@@ -16,6 +16,7 @@ import { ZoomModule } from './zoom/zoom.module';
 import { ZoomController } from './zoom/zoom.controller';
 import { ZoomService } from './zoom/zoom.service';
 import { MessagingModule } from './messaging/messaging.module';
+import { HospitalModule } from './hospital/hospital.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MessagingModule } from './messaging/messaging.module';
     ReviewModule,
     ZoomModule,
     MessagingModule,
+    HospitalModule,
   ],
   controllers: [AppController, ZoomController],
   providers: [AppService, PrismaService, ZoomService],
