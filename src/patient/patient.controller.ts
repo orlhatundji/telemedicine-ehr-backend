@@ -36,18 +36,29 @@ export class PatientController {
     if (user) {
       return new HttpException('User already exists', 400);
     }
+    const hospital = await this.prismaService.hospital.findUnique({
+      where: { id: data.hospitalId },
+    });
+    if (!hospital) {
+      return new HttpException('Hospital not found', 404);
+    }
     const hash = await bcrypt.hash(
       data.password,
       this.configService.get('saltOrRounds'),
     );
     data.password = hash;
     const newData = {
-      name: data.name,
+      hospital: {
+        connect: {
+          id: data.hospitalId,
+        },
+      },
       user: {
         create: {
           email: data.email,
           role: Role.PATIENT,
           password: data.password,
+          name: data.name,
         },
       },
     };

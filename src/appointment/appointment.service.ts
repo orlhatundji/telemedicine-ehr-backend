@@ -24,12 +24,20 @@ export class AppointmentService {
         patientId: true,
         doctor: {
           select: {
-            name: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
         patient: {
           select: {
-            name: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
       },

@@ -23,7 +23,9 @@ export class AuthService {
   }
 
   async signIn(email: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne({ email });
+    const user = await this.usersService.findOne({
+      email,
+    });
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -40,6 +42,9 @@ export class AuthService {
       email: user.email,
       id: user.id,
       role: user.role,
+      name: user.name,
+      patient: user.patient,
+      doctor: user.doctor,
     };
   }
 }

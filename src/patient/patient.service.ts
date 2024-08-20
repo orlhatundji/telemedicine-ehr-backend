@@ -37,9 +37,8 @@ export class PatientService {
       } & {
         patient: {
           id: number;
-          name: string;
           userId: number;
-          assignedDoctors?: { id: number; name: string }[];
+          assignedDoctors?: { id: number }[];
         };
       })
     | null
@@ -56,10 +55,9 @@ export class PatientService {
         patient: {
           select: {
             id: true,
-            name: true,
             userId: true,
             assignedDoctors: {
-              select: { id: true, name: true },
+              select: { id: true },
             },
           },
         },

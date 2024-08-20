@@ -11,11 +11,27 @@ export class UserService {
     private configService: ConfigService,
   ) {}
 
-  async findOne(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<
+    | (User & {
+        patient?: { id: number };
+        doctor?: { id: number };
+      })
+    | null
+  > {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      include: {
+        patient: {
+          select: {
+            id: true,
+          },
+        },
+        doctor: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
   }
 

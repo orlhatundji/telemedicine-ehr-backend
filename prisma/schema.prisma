@@ -13,10 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Hospital {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  password     String
+  name         String
+  doctors      Doctor[]   // One hospital manages multiple doctors
+  patients     Patient[]  // One hospital manages multiple patients
+}
+
 model User {
   id               Int            @id @default(autoincrement())
   email            String         @unique
   password         String
+  name             String
   role             Role
   doctor           Doctor?
   patient          Patient?
@@ -27,10 +37,11 @@ model User {
 
 model Doctor {
   id               Int           @id @default(autoincrement())
-  name             String
   specialty        String
   userId           Int?          @unique
   user             User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospitalId       Int          
+  hospital         Hospital      @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
   appointments     Appointment[]
   assignedPatients Patient[]
   reviews          Review[]
@@ -38,9 +49,10 @@ model Doctor {
 
 model Patient {
   id              Int           @id @default(autoincrement())
-  name            String
   userId          Int           @unique
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospitalId      Int           
+  hospital        Hospital      @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
   appointments    Appointment[]
   assignedDoctors Doctor[]
   reviews         Review[]
@@ -89,4 +101,5 @@ model Conversation {
 enum Role {
   DOCTOR
   PATIENT
+  HOSPITAL
 }

@@ -39,7 +39,7 @@ export class DoctorService {
     });
   }
 
-  async create(data: Prisma.DoctorUncheckedCreateInput) {
+  async create(data: Prisma.DoctorCreateInput) {
     return this.prismaService.doctor.create({
       data,
     });
@@ -47,9 +47,7 @@ export class DoctorService {
 
   async findOne(params: {
     where: Prisma.UserWhereUniqueInput;
-  }): Promise<
-    (User & { doctor: { id: number; name: string; userId: number } }) | null
-  > {
+  }): Promise<(User & { doctor: { id: number; userId: number } }) | null> {
     const { where } = params;
     return this.prismaService.user.findUnique({
       where,
@@ -57,7 +55,6 @@ export class DoctorService {
         doctor: {
           select: {
             id: true,
-            name: true,
             userId: true,
           },
         },

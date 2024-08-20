@@ -32,9 +32,10 @@ export class DoctorController {
     doctorCreateInput: Prisma.DoctorCreateInput & {
       email: string;
       password: string;
+      name: string;
     },
   ) {
-    const { email, password, ...rest } = doctorCreateInput;
+    const { email, password, name, ...rest } = doctorCreateInput;
     const user = await this.userService.findOne({ email: email });
     if (user) {
       return 'Doctor already exists with this email';
@@ -44,6 +45,7 @@ export class DoctorController {
       createdUser = await this.userService.createUser({
         email,
         password,
+        name,
         role: 'DOCTOR',
         doctor: {
           create: rest,

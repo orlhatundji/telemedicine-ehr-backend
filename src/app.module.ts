@@ -9,7 +9,6 @@ import { UserModule } from './users/user.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PatientModule } from './patient/patient.module';
 import { AppointmentModule } from './appointment/appointment.module';
-import { AdminController } from './admin/admin.controller';
 import { AdminModule } from './admin/admin.module';
 import { PrismaService } from './prisma.service';
 import { ReviewModule } from './review/review.module';
@@ -33,6 +32,7 @@ import { MessagingModule } from './messaging/messaging.module';
         PORT: Joi.number(),
       }),
     }),
+    AdminModule,
     AuthModule,
     UserModule,
     DoctorModule,
@@ -43,7 +43,7 @@ import { MessagingModule } from './messaging/messaging.module';
     ZoomModule,
     MessagingModule,
   ],
-  controllers: [AppController, AdminController, ZoomController],
+  controllers: [AppController, ZoomController],
   providers: [AppService, PrismaService, ZoomService],
 })
 export class AppModule {}
