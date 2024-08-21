@@ -23,16 +23,24 @@ model Hospital {
 }
 
 model User {
-  id               Int            @id @default(autoincrement())
-  email            String         @unique
-  password         String
-  name             String
-  role             Role
-  doctor           Doctor?
-  patient          Patient?
-  messagesSent     Message[]      @relation("SentMessages")
-  messagesReceived Message[]      @relation("ReceivedMessages")
-  conversations    Conversation[] @relation("ConversationParticipants")
+  id                      Int            @id @default(autoincrement())
+  email                   String         @unique
+  password                String
+  name                    String
+  role                    Role
+  phone                   String?
+  dateOfBirth             DateTime?
+  gender                  Gender?
+  occupation              String?
+  maritalStatus           MaritalStatus?
+  emergencyContact        String?
+  nextOfKin               String?
+  nextOfKinRelationShip   String?
+  doctor                  Doctor?
+  patient                 Patient?
+  messagesSent            Message[]      @relation("SentMessages")
+  messagesReceived        Message[]      @relation("ReceivedMessages")
+  conversations           Conversation[] @relation("ConversationParticipants")
 }
 
 model Doctor {
@@ -102,4 +110,16 @@ enum Role {
   DOCTOR
   PATIENT
   HOSPITAL
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MaritalStatus {
+  SINGLE
+  DIVORCED
+  MARRIED
+  WIDOWED
 }

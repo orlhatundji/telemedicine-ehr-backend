@@ -33,6 +33,7 @@ export class DoctorService {
           select: {
             email: true,
             role: true,
+            name: true,
           },
         },
       },

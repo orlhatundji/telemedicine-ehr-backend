@@ -8,6 +8,8 @@ import {
   UseGuards,
   HttpException,
   Req,
+  Query,
+  Patch,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PatientService } from './patient.service';
@@ -29,6 +31,7 @@ export class PatientController {
   async create(
     @Body()
     data: Prisma.PatientUncheckedCreateInput & Prisma.UserUncheckedCreateInput,
+    @Req() req,
   ) {
     const user = await this.prismaService.user.findUnique({
       where: { email: data.email },
@@ -39,38 +42,40 @@ export class PatientController {
 
     try {
       const hospital = await this.prismaService.hospital.findUnique({
-        where: { id: data.hospitalId },
+        where: { id: req.user.id },
       });
 
       if (!hospital) {
         return new HttpException('Hospital not found', 404);
       }
       const hash = await bcrypt.hash(
-        data.password,
+        '1234',
         this.configService.get('saltOrRounds'),
       );
       data.password = hash;
+      if (data.dateOfBirth !== null && typeof data.dateOfBirth === 'string') {
+        const dateOfBirth = new Date(data.dateOfBirth);
+        if (isNaN(dateOfBirth.getTime())) {
+          return new HttpException('Invalid date of birth', 400);
+        }
+        data.dateOfBirth = dateOfBirth;
+      }
       const newData = {
         hospital: {
           connect: {
-            id: data.hospitalId,
+            id: req.user.id,
           },
         },
         user: {
           create: {
-            email: data.email,
+            ...data,
             role: Role.PATIENT,
-            password: data.password,
-            name: data.name,
           },
         },
       };
       return this.patientService.create(newData);
     } catch (error) {
-      return new HttpException(
-        'Hospital not found, provide valid credentials',
-        404,
-      );
+      throw new HttpException(error.message, 500);
     }
   }
 
@@ -93,10 +98,33 @@ export class PatientController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':email')
-  findOne(@Param('email') email: string) {
-    return this.patientService.findOne({
-      where: { email },
+  @Get('unique')
+  async findOne(@Query() query) {
+    const { email, id } = query;
+    if (email) {
+      return await this.patientService.findOne({
+        where: { email },
+      });
+    } else if (id) {
+      return await this.patientService.findOne({
+        where: { id: +id },
+      });
+    }
+    return new HttpException('Provide email or id', 400);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() data: Prisma.UserUpdateInput) {
+    if (data.dateOfBirth !== null && typeof data.dateOfBirth === 'string') {
+      data.dateOfBirth = new Date(data.dateOfBirth);
+      if (isNaN(data.dateOfBirth.getTime())) {
+        return new HttpException('Invalid date of birth', 400);
+      }
+    }
+    return this.patientService.update({
+      where: { id: Number(id) },
+      data,
     });
   }
 

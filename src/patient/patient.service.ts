@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Doctor, Patient, Prisma, Role } from '@prisma/client';
+import { Doctor, Patient, Prisma, Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -11,10 +11,12 @@ export class PatientService {
   ) {}
   async create(data: Prisma.PatientCreateInput): Promise<Patient> {
     try {
-      return this.prismaService.patient.create({
+      const patient = await this.prismaService.patient.create({
         data,
-        include: { user: { select: { email: true } } },
+        include: { user: true },
       });
+      delete patient.user.password;
+      return patient;
     } catch (error) {
       throw new HttpException(error.message, 400);
     }
@@ -25,8 +27,18 @@ export class PatientService {
       include: {
         user: {
           select: {
+            id: true,
             email: true,
             role: true,
+            gender: true,
+            dateOfBirth: true,
+            name: true,
+            phone: true,
+            occupation: true,
+            maritalStatus: true,
+            nextOfKin: true,
+            nextOfKinRelationShip: true,
+            emergencyContact: true,
           },
         },
       },
@@ -34,11 +46,7 @@ export class PatientService {
   }
 
   async findOne(params: { where: Prisma.UserWhereUniqueInput }): Promise<
-    | ({
-        id: number;
-        email: string;
-        role: string;
-      } & {
+    | (Omit<User, 'password'> & {
         patient: {
           id: number;
           userId: number;
@@ -49,32 +57,41 @@ export class PatientService {
   > {
     const { where } = params;
     where.role = Role.PATIENT;
-    return this.prismaService.user.findUnique({
-      where,
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        password: false,
-        patient: {
-          select: {
-            id: true,
-            userId: true,
-            assignedDoctors: {
-              select: { id: true },
+    try {
+      const patient = await this.prismaService.user.findUnique({
+        where,
+        include: {
+          patient: {
+            select: {
+              id: true,
+              userId: true,
+              assignedDoctors: {
+                select: { id: true },
+              },
             },
           },
         },
-      },
-    });
+      });
+      if (!patient) {
+        throw new HttpException('Patient not found', 404);
+      }
+      delete patient.password;
+      return patient;
+    } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
   }
 
   async update(params: {
-    where: Prisma.PatientWhereUniqueInput;
-    data: Prisma.PatientUpdateInput;
-  }): Promise<Patient> {
+    where: Prisma.UserWhereUniqueInput;
+    data: Prisma.UserUpdateInput;
+  }): Promise<User> {
     const { where, data } = params;
-    return this.prismaService.patient.update({ where, data });
+    try {
+      return await this.prismaService.user.update({ where, data });
+    } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
   }
 
   async getAssignedDoctors(
