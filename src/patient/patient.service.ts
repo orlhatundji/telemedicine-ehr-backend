@@ -82,18 +82,6 @@ export class PatientService {
     }
   }
 
-  async update(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
-    try {
-      return await this.prismaService.user.update({ where, data });
-    } catch (error) {
-      throw new HttpException(error.message, 400);
-    }
-  }
-
   async getAssignedDoctors(
     where: Prisma.PatientWhereUniqueInput,
   ): Promise<Doctor[]> {

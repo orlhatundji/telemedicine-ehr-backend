@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { User, Prisma } from '@prisma/client';
@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UserService {
   constructor(
-    private prisma: PrismaService,
+    private prismaService: PrismaService,
     private configService: ConfigService,
   ) {}
 
@@ -18,7 +18,7 @@ export class UserService {
       })
     | null
   > {
-    return this.prisma.user.findUnique({
+    return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
       include: {
         patient: {
@@ -43,7 +43,7 @@ export class UserService {
     orderBy?: Prisma.UserOrderByWithRelationInput;
   }): Promise<User[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
+    return this.prismaService.user.findMany({
       skip,
       take,
       cursor,
@@ -58,24 +58,25 @@ export class UserService {
       this.configService.get('saltOrRounds'),
     );
     data.password = hash;
-    return this.prisma.user.create({
+    return this.prismaService.user.create({
       data,
     });
   }
 
-  async updateUser(params: {
+  async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
-    });
+    try {
+      return await this.prismaService.user.update({ where, data });
+    } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
   }
 
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
+    return this.prismaService.user.delete({
       where,
     });
   }

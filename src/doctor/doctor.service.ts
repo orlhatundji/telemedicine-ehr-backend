@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Doctor, Prisma, User } from '@prisma/client';
+import { Doctor, Prisma, Role, User } from '@prisma/client';
 
 @Injectable()
 export class DoctorService {
@@ -14,26 +14,27 @@ export class DoctorService {
     });
   }
 
-  async doctors(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.DoctorWhereUniqueInput;
-    where?: Prisma.DoctorWhereInput;
-    orderBy?: Prisma.DoctorOrderByWithRelationInput;
-  }): Promise<Doctor[]> {
-    const { skip, take, cursor, where, orderBy } = params;
+  async doctors(): Promise<Doctor[]> {
     return this.prismaService.doctor.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
       include: {
+        _count: {
+          select: {
+            assignedPatients: true,
+          },
+        },
         user: {
           select: {
+            id: true,
             email: true,
             role: true,
+            gender: true,
+            dateOfBirth: true,
             name: true,
+            phone: true,
+            maritalStatus: true,
+            nextOfKin: true,
+            nextOfKinRelationShip: true,
+            emergencyContact: true,
           },
         },
       },
@@ -65,5 +66,39 @@ export class DoctorService {
         },
       },
     });
+  }
+
+  async findUnique(params: { where: Prisma.UserWhereUniqueInput }): Promise<
+    | (Omit<User, 'password'> & {
+        doctor: {
+          id: number;
+          userId: number;
+          assignedDoctors?: { id: number }[];
+        };
+      })
+    | null
+  > {
+    const { where } = params;
+    where.role = Role.DOCTOR;
+    try {
+      const doctor = await this.prismaService.user.findUnique({
+        where,
+        include: {
+          doctor: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+        },
+      });
+      if (!doctor) {
+        throw new HttpException('doctor not found', 404);
+      }
+      delete doctor.password;
+      return doctor;
+    } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
   }
 }
