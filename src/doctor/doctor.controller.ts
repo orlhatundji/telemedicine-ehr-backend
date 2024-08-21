@@ -7,6 +7,8 @@ import {
   Query,
   HttpException,
   Req,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { DoctorService } from './doctor.service';
@@ -99,5 +101,11 @@ export class DoctorController {
       });
     }
     return new HttpException('Provide email or id', 400);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.doctorService.remove({ id: Number(id) });
   }
 }

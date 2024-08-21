@@ -101,4 +101,17 @@ export class DoctorService {
       throw new HttpException(error.message, 400);
     }
   }
+
+  async remove(where: Prisma.UserWhereUniqueInput): Promise<void> {
+    const doctor = await this.prismaService.user.findUnique({ where });
+    if (!doctor) {
+      throw new HttpException('Doctor not found', 404, {});
+    } else {
+      await this.prismaService.user.delete({
+        where: {
+          id: +doctor.id,
+        },
+      });
+    }
+  }
 }
