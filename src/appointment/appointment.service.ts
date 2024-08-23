@@ -59,4 +59,37 @@ export class AppointmentService {
       },
     });
   }
+
+  findAllToday() {
+    return this.prismaService.appointment.findMany({
+      where: {
+        date: {
+          gte: new Date(),
+          lt: new Date(new Date().setHours(23, 59, 59, 999)),
+        },
+      },
+      select: {
+        date: true,
+        doctor: {
+          select: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        patient: {
+          select: {
+            user: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 }
