@@ -17,6 +17,9 @@ import { ZoomController } from './zoom/zoom.controller';
 import { ZoomService } from './zoom/zoom.service';
 import { MessagingModule } from './messaging/messaging.module';
 import { HospitalModule } from './hospital/hospital.module';
+import { MailSchedulerService } from './mail-scheduler/mail-scheduler.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppointmentService } from './appointment/appointment.service';
 
 @Module({
   imports: [
@@ -33,6 +36,7 @@ import { HospitalModule } from './hospital/hospital.module';
         PORT: Joi.number(),
       }),
     }),
+    ScheduleModule.forRoot(),
     AdminModule,
     AuthModule,
     UserModule,
@@ -46,6 +50,13 @@ import { HospitalModule } from './hospital/hospital.module';
     HospitalModule,
   ],
   controllers: [AppController, ZoomController],
-  providers: [AppService, PrismaService, ZoomService],
+  providers: [
+    AppService,
+    PrismaService,
+    ZoomService,
+    MailSchedulerService,
+    AppointmentService,
+    MailSchedulerService,
+  ],
 })
 export class AppModule {}
