@@ -9,6 +9,7 @@ import {
   HttpException,
   Req,
   Query,
+  Patch,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PatientService } from './patient.service';
@@ -110,6 +111,18 @@ export class PatientController {
       });
     }
     return new HttpException('Provide email or id', 400);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() data: Prisma.PatientUpdateInput,
+  ) {
+    return this.patientService.update({
+      where: { id: Number(id) },
+      data,
+    });
   }
 
   @UseGuards(AuthGuard)

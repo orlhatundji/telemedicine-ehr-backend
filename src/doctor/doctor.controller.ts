@@ -9,6 +9,7 @@ import {
   Req,
   Delete,
   Param,
+  Patch,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { DoctorService } from './doctor.service';
@@ -101,6 +102,27 @@ export class DoctorController {
       });
     }
     return new HttpException('Provide email or id', 400);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() data: Prisma.DoctorUpdateInput,
+  ) {
+    if (
+      data.employmentDate !== null &&
+      typeof data.employmentDate === 'string'
+    ) {
+      data.employmentDate = new Date(data.employmentDate);
+      if (isNaN(data.employmentDate.getTime())) {
+        return new HttpException('Invalid employment date', 400);
+      }
+    }
+    return this.doctorService.update({
+      where: { id: Number(id) },
+      data,
+    });
   }
 
   @UseGuards(AuthGuard)

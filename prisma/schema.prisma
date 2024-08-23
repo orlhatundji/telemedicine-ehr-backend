@@ -53,6 +53,11 @@ model Doctor {
   appointments     Appointment[]
   assignedPatients Patient[]
   reviews          Review[]
+  licenseNumber       String?
+  employmentDate      DateTime?
+  qualifications      String?  
+  certifications      String?   
+  languages           String? 
 }
 
 model Patient {
@@ -64,6 +69,18 @@ model Patient {
   appointments    Appointment[]
   assignedDoctors Doctor[]
   reviews         Review[]
+  familyConditions String?  
+  allergies             String?   
+  pastMedicalConditions String?   
+  alcoholConsumption    String?   
+  bloodGroup            String?   
+  genotype              String?   
+  currentMedications    String?   
+  vaccinationHistory    String?   
+  surgicalHistory       String?   
+  socialHistory         String?  
+  weight                String?
+  height                String?
 }
 
 model Appointment {

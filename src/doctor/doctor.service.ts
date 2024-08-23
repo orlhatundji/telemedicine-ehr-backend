@@ -59,9 +59,12 @@ export class DoctorService {
       where,
       include: {
         doctor: {
-          select: {
-            id: true,
-            userId: true,
+          include: {
+            assignedPatients: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
       },
@@ -85,9 +88,10 @@ export class DoctorService {
         where,
         include: {
           doctor: {
-            select: {
-              id: true,
-              userId: true,
+            include: {
+              assignedPatients: {
+                select: { id: true },
+              },
             },
           },
         },
@@ -98,6 +102,19 @@ export class DoctorService {
       delete doctor.password;
       return doctor;
     } catch (error) {
+      throw new HttpException(error.message, 400);
+    }
+  }
+
+  async update(params: {
+    where: Prisma.DoctorWhereUniqueInput;
+    data: Prisma.DoctorUpdateInput;
+  }): Promise<Doctor> {
+    const { where, data } = params;
+    try {
+      return await this.prismaService.doctor.update({ where, data });
+    } catch (error) {
+      console.log(error.message);
       throw new HttpException(error.message, 400);
     }
   }
