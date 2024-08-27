@@ -56,7 +56,10 @@ export class AuthService {
     const hospital = await this.prismaService.hospital.findUnique({
       where: { email },
     });
-    const isMatch = await bcrypt.compare(pass, hospital.password);
+    if (!hospital) {
+      return null;
+    }
+    const isMatch = await bcrypt.compare(String(pass), hospital.password);
     if (hospital && isMatch) {
       delete hospital.password;
       return hospital;

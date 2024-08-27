@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Doctor, Patient, Prisma, Role, User } from '@prisma/client';
+import { Patient, Prisma, Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -82,11 +82,22 @@ export class PatientService {
 
   async getAssignedDoctors(
     where: Prisma.PatientWhereUniqueInput,
-  ): Promise<Doctor[]> {
+  ): Promise<{ specialty: string; user: { name: string; id: number } }[]> {
     const assignedDoctors = await this.prismaService.patient.findUnique({
       where,
       select: {
-        assignedDoctors: true,
+        assignedDoctors: {
+          select: {
+            id: true,
+            specialty: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     return assignedDoctors.assignedDoctors;

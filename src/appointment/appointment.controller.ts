@@ -102,7 +102,11 @@ export class AppointmentController {
       include = {
         doctor: {
           select: {
-            name: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
             specialty: true,
           },
         },
