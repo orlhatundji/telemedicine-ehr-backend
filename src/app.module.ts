@@ -20,6 +20,7 @@ import { HospitalModule } from './hospital/hospital.module';
 import { MailSchedulerService } from './mail-scheduler/mail-scheduler.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppointmentService } from './appointment/appointment.service';
+import { TreatmentPlanModule } from './treatmentplan/treatmentplan.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { AppointmentService } from './appointment/appointment.service';
     ZoomModule,
     MessagingModule,
     HospitalModule,
+    TreatmentPlanModule,
   ],
   controllers: [AppController, ZoomController],
   providers: [

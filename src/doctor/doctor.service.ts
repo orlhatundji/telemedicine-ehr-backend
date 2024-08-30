@@ -114,7 +114,6 @@ export class DoctorService {
     try {
       return await this.prismaService.doctor.update({ where, data });
     } catch (error) {
-      console.log(error.message);
       throw new HttpException(error.message, 400);
     }
   }

@@ -14,33 +14,33 @@ datasource db {
 }
 
 model Hospital {
-  id           Int        @id @default(autoincrement())
-  email        String     @unique
-  password     String
-  name         String
-  doctors      Doctor[]   // One hospital manages multiple doctors
-  patients     Patient[]  // One hospital manages multiple patients
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  name     String
+  doctors  Doctor[]
+  patients Patient[]
 }
 
 model User {
-  id                      Int            @id @default(autoincrement())
-  email                   String         @unique
-  password                String
-  name                    String
-  role                    Role
-  phone                   String?
-  dateOfBirth             DateTime?
-  gender                  Gender?
-  occupation              String?
-  maritalStatus           MaritalStatus?
-  emergencyContact        String?
-  nextOfKin               String?
-  nextOfKinRelationShip   String?
-  doctor                  Doctor?
-  patient                 Patient?
-  messagesSent            Message[]      @relation("SentMessages")
-  messagesReceived        Message[]      @relation("ReceivedMessages")
-  conversations           Conversation[] @relation("ConversationParticipants")
+  id                    Int            @id @default(autoincrement())
+  email                 String         @unique
+  password              String
+  name                  String
+  role                  Role
+  phone                 String?
+  dateOfBirth           DateTime?
+  gender                Gender?
+  occupation            String?
+  maritalStatus         MaritalStatus?
+  emergencyContact      String?
+  nextOfKin             String?
+  nextOfKinRelationShip String?
+  doctor                Doctor?
+  patient               Patient?
+  messagesSent          Message[]      @relation("SentMessages")
+  messagesReceived      Message[]      @relation("ReceivedMessages")
+  conversations         Conversation[] @relation("ConversationParticipants")
 }
 
 model Doctor {
@@ -48,39 +48,42 @@ model Doctor {
   specialty        String
   userId           Int?          @unique
   user             User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hospitalId       Int          
+  hospitalId       Int
   hospital         Hospital      @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
   appointments     Appointment[]
   assignedPatients Patient[]
   reviews          Review[]
-  licenseNumber       String?
-  employmentDate      DateTime?
-  qualifications      String?  
-  certifications      String?   
-  languages           String? 
+  licenseNumber    String?
+  employmentDate   DateTime?
+  qualifications   String?
+  certifications   String?
+  languages        String?
+
+  TreatmentPlan TreatmentPlan[]
 }
 
 model Patient {
-  id              Int           @id @default(autoincrement())
-  userId          Int           @unique
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hospitalId      Int           
-  hospital        Hospital      @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
-  appointments    Appointment[]
-  assignedDoctors Doctor[]
-  reviews         Review[]
-  familyConditions String?  
-  allergies             String?   
-  pastMedicalConditions String?   
-  alcoholConsumption    String?   
-  bloodGroup            String?   
-  genotype              String?   
-  currentMedications    String?   
-  vaccinationHistory    String?   
-  surgicalHistory       String?   
-  socialHistory         String?  
+  id                    Int             @id @default(autoincrement())
+  userId                Int             @unique
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospitalId            Int
+  hospital              Hospital        @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  appointments          Appointment[]
+  assignedDoctors       Doctor[]
+  reviews               Review[]
+  familyConditions      String?
+  allergies             String?
+  pastMedicalConditions String?
+  alcoholConsumption    String?
+  bloodGroup            String?
+  genotype              String?
+  currentMedications    String?
+  vaccinationHistory    String?
+  surgicalHistory       String?
+  socialHistory         String?
   weight                String?
   height                String?
+  TreatmentPlan         TreatmentPlan[]
 }
 
 model Appointment {
@@ -119,8 +122,46 @@ model Conversation {
   id           Int       @id @default(autoincrement())
   participants User[]    @relation("ConversationParticipants")
   messages     Message[]
-  identifier  String     @unique
+  identifier   String    @unique
   createdAt    DateTime  @default(now())
+}
+
+model TreatmentPlan {
+  id          Int             @id @default(autoincrement())
+  title       String
+  patientId   Int
+  patient     Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId    Int?
+  doctor      Doctor?         @relation(fields: [doctorId], references: [id], onDelete: SetNull)
+  medications Medication[]
+  status      TreatmentStatus @default(ACTIVE)
+  startDate   DateTime
+  endDate     DateTime?
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Medication {
+  id           Int                 @id @default(autoincrement())
+  treatmentId  Int
+  treatment    TreatmentPlan       @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  name         String
+  dosage       String
+  frequency    String
+  duration     String
+  startDate    DateTime
+  instructions String?
+  completed    Boolean             @default(false)
+  history      MedicationHistory[]
+}
+
+model MedicationHistory {
+  id            Int        @id @default(autoincrement())
+  medicationId  Int
+  medication    Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  changeDate    DateTime   @default(now())
+  changeDetails String
 }
 
 enum Role {
@@ -139,4 +180,11 @@ enum MaritalStatus {
   DIVORCED
   MARRIED
   WIDOWED
+}
+
+enum TreatmentStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+  CANCELLED
 }
