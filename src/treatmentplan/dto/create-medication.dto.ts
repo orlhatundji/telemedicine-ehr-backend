@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
@@ -24,7 +23,6 @@ export class CreateMedicationDto {
   duration: string;
 
   @IsDateString()
-  @Type(() => Date)
   startDate: Date;
 
   @IsString()

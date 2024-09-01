@@ -44,6 +44,14 @@ export class TreatmentPlanController {
       },
     });
 
+    const patient = await this.prismaService.patient.findUnique({
+      where: { id: createTreatmentPlanDto.patientId },
+    });
+
+    if (!patient) {
+      return new HttpException('Patient not found', 404);
+    }
+
     createTreatmentPlanDto.startDate = new Date(
       createTreatmentPlanDto.startDate,
     );
